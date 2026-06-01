@@ -32,30 +32,37 @@ def make_predictions():
             sessionID = driver.session_id
             # create a folder under the data param with this name
             datafp = os.path.join(os.getcwd(), f"{sessionID}-PREDICTION")
-            os.mkdir(datafp)
+            os.makedirs(datafp, exist_ok=True)
             # now open a file in this folder
             csvsessdata = open(os.path.join(datafp, f"{sessionID}-PREDICTION.csv"), "w")
             csvsessdata.write("profile,prediction,outcome\n")
             # this is the end of the first initial setup
             counter = int(settings["TOTALSWIPES"])
             while counter > 0:
-                # increment the counter down
                 counter = counter - 1
-                # wait for about 5 seconds 
                 time.sleep(5)
-                # then save all the pictures in the right directory
-                profile = BM.find_download_all_pictures(driver, datafp)
-                # make a prediction on this profile
-                pictures = ML.load_images_for_prediction(datafp, int(settings["IMG_SIZE"]), profile)
-                prediction = ML.make_prediction(pictures, model)
-                decision = ML.make_decision(prediction, settings['THRESH'])
-                # log this in the logger 
-                csvsessdata.write(f"{profile},{prediction},{decision}\n")
-                # then actually swipe left or right 
-                if (decision == 1):
-                    BM.like_profile(driver)
-                else:
-                    BM.dislike_profile(driver)
+                try:
+                    profile = BM.find_download_all_pictures(driver, datafp)
+                    if not profile:
+                        print("  ! No images saved for this profile, disliking and skipping.")
+                        BM.dislike_profile(driver)
+                        time.sleep(2)
+                        continue
+                    pictures = ML.load_images_for_prediction(datafp, int(settings["IMG_SIZE"]), profile)
+                    prediction = ML.make_prediction(pictures, model)
+                    decision = ML.make_decision(prediction, settings['THRESH'])
+                    csvsessdata.write(f"{profile},{prediction},{decision}\n")
+                    csvsessdata.flush()
+                    if (decision == 1):
+                        BM.like_profile(driver)
+                    else:
+                        BM.dislike_profile(driver)
+                except Exception as e:
+                    print(f"  ! Error on this profile, disliking and skipping: {e}")
+                    try:
+                        BM.dislike_profile(driver)
+                    except Exception:
+                        pass
                 time.sleep(2)
         else:
             print("Sorry you gotta logging")
