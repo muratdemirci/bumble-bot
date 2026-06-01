@@ -24,11 +24,11 @@ def main(MODE):
 
 
 if __name__ == "__main__":
-    try:
-        mode = sys.argv[1]
-        if mode in modes:
-            main(mode)
-        else:
-            print("Sorry that was not a recognized mode please type HELP to show all possible modes")
-    except Exception as e:
+    if len(sys.argv) < 2:
         print("You must pass in an argument, type HELP to view all possible options")
+        sys.exit(1)
+    mode = sys.argv[1]
+    if mode in modes:
+        main(mode)
+    else:
+        print("Sorry that was not a recognized mode please type HELP to show all possible modes")
