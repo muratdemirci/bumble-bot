@@ -1,0 +1,6 @@
+tensorflow>=2.18
+scikit-learn>=1.5
+scikit-image>=0.24
+pandas>=2.2
+numpy>=1.26
+selenium>=4.25
