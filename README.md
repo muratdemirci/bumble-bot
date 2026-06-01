@@ -1,5 +1,8 @@
 # BumbleBot
 A auto swiper for bumble that learns your preferences
+
+> **Note:** I forked this repo from [range-et/BumbleBot](https://github.com/range-et/BumbleBot), ported it to macOS, and updated it. Big kudos and thanks to [@range-et](https://github.com/range-et) for the original project! 🙌
+
 ![Bumble Bot Logo](/BumbleBotImage.png?raw=true)
 
 ## Introduction
